@@ -95,7 +95,8 @@ function drupalgap_field_info_instances(entity_type, bundle_name) {
  * @param {Object} form
  * @param {Object} entity
  */
-function drupalgap_field_info_instances_add_to_form(entity_type, bundle, form, entity) {
+function drupalgap_field_info_instances_add_to_form(entity_type, bundle,
+  form, entity) {
   try {
     // Grab the field info instances for this entity type and bundle.
     var fields = drupalgap_field_info_instances(entity_type, bundle);
@@ -126,27 +127,19 @@ function drupalgap_field_info_instances_add_to_form(entity_type, bundle, form, e
             required: field.required,
             description: field.description
           };
+          if (!form.elements[name][language]) {
+            form.elements[name][language] = {};
+          }
           var default_value = field.default_value;
+          var delta = 0;
           var cardinality = parseInt(field_info.cardinality);
           if (cardinality == -1) {
             cardinality = 1; // we'll just add one element for now, until we
                              // figure out how to handle the 'add another
                              // item' feature.
           }
-          if (entity && entity[name] && entity[name].length != 0) {
-
-            // Make sure the field has some type of language code on it, or just skip it. An entity will sometimes have
-            // a language code that a field doesn't have, so fall back to und on the field if the language code isn't
-            // present.
-            if (!entity[name][language]) {
-              if (!entity[name].und) { continue; }
-              language = 'und';
-            }
-
-            if (!form.elements[name][language]) { form.elements[name][language] = {}; }
-
+          if (entity && entity[name] && entity[name].length != 0 && entity[name][language]) {
             for (var delta = 0; delta < cardinality; delta++) {
-
               // @TODO - is this where we need to use the idea of the
               // value_callback property present in Drupal's FAPI? That way
               // each element knows how to map the entity data to its element
@@ -155,27 +148,19 @@ function drupalgap_field_info_instances_add_to_form(entity_type, bundle, form, e
                 entity[name][language][delta] &&
                 typeof entity[name][language][delta].value !== 'undefined'
               ) { default_value = entity[name][language][delta].value; }
-
               // If the default_value is null, set it to an empty string.
               if (default_value == null) { default_value = ''; }
-
-              // Note, not all fields have a language code to use here, e.g. taxonomy term reference fields do not.
+              // @todo - It appears not all fields have a language code to use
+              // here, for example taxonomy term reference fields don't!
               form.elements[name][language][delta] = {
                 value: default_value
               };
-
               // Place the field item onto the element.
               if (entity[name][language][delta]) {
                 form.elements[name][language][delta].item =
                   entity[name][language][delta];
               }
-
             }
-
-            // Set the language back to the entity's language in case it was temporarily changed because of an un
-            // translated field.
-            if (entity && entity.language) { language = entity.language; }
-
           }
 
           // Give module's a chance to alter their own element during the form
@@ -236,7 +221,8 @@ function drupalgap_field_key(field_name) {
  * @param {*} display
  * @return {Object}
  */
-function list_field_formatter_view(entity_type, entity, field, instance, langcode, items, display) {
+function list_field_formatter_view(entity_type, entity, field, instance,
+  langcode, items, display) {
   try {
     var element = {};
     if (!empty(items)) {
@@ -276,7 +262,8 @@ function list_field_formatter_view(entity_type, entity, field, instance, langcod
  *
  * @return {*}
  */
-function list_assemble_form_state_into_field(entity_type, bundle, form_state_value, field, instance, langcode, delta, field_key) {
+function list_assemble_form_state_into_field(entity_type, bundle,
+  form_state_value, field, instance, langcode, delta, field_key) {
   try {
     var result = form_state_value;
     switch (field.type) {
@@ -348,22 +335,12 @@ function list_assemble_form_state_into_field(entity_type, bundle, form_state_val
  */
 function list_views_exposed_filter(form, form_state, element, filter, field) {
   try {
-
-    //console.log('list_views_exposed_filter');
-    //console.log(form);
-    //console.log(form_state);
-    //console.log(element);
-    //console.log(filter);
-    //console.log(field);
-
+    //dpm('list_views_exposed_filter');
+    //dpm(arguments);
     var widget = filter.options.group_info.widget;
-
-    // List fields.
     if (widget == 'select') {
-
       // Set the element value if we have one in the filter.
       if (!empty(filter.value)) { element.value = filter.value[0]; }
-
       // Set the options, then depending on whether or not it is required, set
       // the default value accordingly.
       element.options = filter.value_options;
@@ -371,10 +348,13 @@ function list_views_exposed_filter(form, form_state, element, filter, field) {
         element.options['All'] = '- ' + t('Any') + ' -';
         if (typeof element.value === 'undefined') { element.value = 'All'; }
       }
-
     }
     else {
-      console.log('WARNING: list_views_exposed_filter - unsupported widget:' + widget);
+      dpm(
+        'WARNING: list_views_exposed_filter - unsupported widget (' +
+          widget +
+        ')'
+      );
     }
   }
   catch (error) { console.log('list_views_exposed_filter - ' + error); }
@@ -391,7 +371,8 @@ function list_views_exposed_filter(form, form_state, element, filter, field) {
  * @param {*} display
  * @return {Object}
  */
-function number_field_formatter_view(entity_type, entity, field, instance, langcode, items, display) {
+function number_field_formatter_view(entity_type, entity, field, instance,
+  langcode, items, display) {
   try {
     var element = {};
     // If items is a string, convert it into a single item JSON object.
@@ -427,7 +408,8 @@ function number_field_formatter_view(entity_type, entity, field, instance, langc
  * @param {Number} delta
  * @param {Object} element
  */
-function number_field_widget_form(form, form_state, field, instance, langcode, items, delta, element) {
+function number_field_widget_form(form, form_state, field, instance, langcode,
+  items, delta, element) {
   try {
     switch (element.type) {
       case 'number_integer':
@@ -472,7 +454,8 @@ function number_field_widget_form(form, form_state, field, instance, langcode, i
  * @param {Object} element
  * @return {*}
  */
-function options_field_widget_form(form, form_state, field, instance, langcode, items, delta, element) {
+function options_field_widget_form(form, form_state, field, instance, langcode,
+  items, delta, element) {
   try {
     switch (element.type) {
       case 'checkbox':
@@ -642,10 +625,6 @@ function options_field_widget_form(form, form_state, field, instance, langcode, 
               )
           });
         break;
-      default:
-          var msg = 'options_field_widget_form - unknown widget type: ' + element.type;
-          console.log(msg);
-        break;
     }
   }
   catch (error) { console.log('options_field_widget_form - ' + error); }
@@ -662,24 +641,20 @@ function options_field_widget_form(form, form_state, field, instance, langcode, 
  * @param {*} display
  * @return {Object}
  */
-function text_field_formatter_view(entity_type, entity, field, instance, langcode, items, display) {
+function text_field_formatter_view(entity_type, entity, field, instance,
+  langcode, items, display) {
   try {
     var element = {};
-    if (items.length) {
+    if (!empty(items)) {
       for (var delta in items) {
-        if (!items.hasOwnProperty(delta)) { continue; }
-
-        // Grab the item, then grab the field value or its safe_value if we have it.
-        var item = items[delta];
-        var value = typeof item.safe_value !== 'undefined' ? item.safe_value : item.value;
-
-        // Any trim?
-        if (display.type == 'text_summary_or_trimmed') {
-          var length = display.settings.trim_length;
-          value = value.length > length ? value.substring(0, length - 3) + "..." : value.substring(0, length);
-        }
-
-        element[delta] = { markup: value };
+          if (!items.hasOwnProperty(delta)) { continue; }
+          var item = items[delta];
+          // Grab the field value, but use the safe_value if we have it.
+          var value = item.value;
+          if (typeof item.safe_value !== 'undefined') {
+            value = item.safe_value;
+          }
+          element[delta] = { markup: value };
       }
     }
     return element;
@@ -698,7 +673,8 @@ function text_field_formatter_view(entity_type, entity, field, instance, langcod
  * @param {Number} delta
  * @param {Object} element
  */
-function text_field_widget_form(form, form_state, field, instance, langcode, items, delta, element) {
+function text_field_widget_form(form, form_state, field, instance, langcode,
+  items, delta, element) {
   try {
     // Determine the widget type, then set the delta item's type property.
     var type = null;

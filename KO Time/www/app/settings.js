@@ -15,7 +15,7 @@ Drupal.settings.debug = true;
 /* DRUPAL PATHS */
 
 // Site Path (do not use a trailing slash)
-Drupal.settings.site_path = 'http:127.0.0.1/DRUPAL7/'; // e.g. http://www.example.com
+Drupal.settings.site_path = 'http://127.0.0.1/DRUPAL7'; // e.g. http://www.example.com
 
 // Default Services Endpoint Path
 Drupal.settings.endpoint = 'drupalgap';
@@ -33,7 +33,7 @@ Drupal.settings.language_default = 'und';
 Drupal.settings.cache.entity = {
 
   /* Globals (will be used if not overwritten below) */
-  enabled: false,
+  enabled: true,
   expiration: 60, // # of seconds to cache, set to 0 to cache forever
 
   /* Entity types */
@@ -49,17 +49,17 @@ Drupal.settings.cache.entity = {
      bundles: {}
      },*/
 
-    // Nodes
-    /*node: {
+    /* Nodes */
+    node: {
 
-      // Node Globals (will be used if not overwritten below)
+      /* Node Globals (will be used if not overwritten below) */
       enabled: true,
       expiration: 120,
 
-      // Content types (aka bundles)
+      /* Content types (aka bundles) */
       bundles: {
 
-        article: {
+        articles: {
           expiration: 3600
         },
         page: {
@@ -67,7 +67,7 @@ Drupal.settings.cache.entity = {
         }
 
       }
-    },*/
+    },
 
     /* Terms */
     /*taxonomy_term: {
@@ -91,7 +91,7 @@ Drupal.settings.cache.entity = {
 /* Views Caching */
 
 Drupal.settings.cache.views = {
-  enabled: false,
+  enabled: true,
   expiration: 3600
 };
 
@@ -114,7 +114,7 @@ drupalgap.settings.locale = {
  *************/
 
 // App Title
-drupalgap.settings.title = 'Ko Time';
+drupalgap.settings.title = 'KO Drupal';
 
 // App Front Page
 drupalgap.settings.front = 'dashboard';
@@ -383,7 +383,7 @@ drupalgap.settings.menus.regions['footer'] = {
  * Camera |
  **********/
 drupalgap.settings.camera = {
-  quality: 90
+  quality: 50
 };
 
 /***********************|

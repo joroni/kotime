@@ -240,12 +240,8 @@ function drupalgap_render_region(region) {
 function _drupalgap_region_render_zone(zone, region, current_path) {
   try {
     var html = '';
-    var theme_name = drupalgap.settings.theme;
-    if (typeof drupalgap.settings.blocks[theme_name][region.name] ===
-      'undefined'
-    ) { return html; }
     var region_settings =
-      drupalgap.settings.blocks[theme_name][region.name];
+      drupalgap.settings.blocks[drupalgap.settings.theme][region.name];
     if (typeof region_settings[zone] === 'undefined') { return html; }
     var blocks = region_settings[zone];
     for (var block_delta in blocks) {

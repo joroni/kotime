@@ -97,12 +97,11 @@ function user_logout_callback() {
  * The user logout pageshow callback. This actually handles the call to the
  * user logout service resource.
  */
-function user_logout_pageshow() {
+function user_logout_pagechange() {
   try {
     user_logout({
       success: function(data) {
-        drupalgap_remove_pages_from_dom();
-        drupalgap_goto(drupalgap.settings.front, { reloadPage:true });
+        drupalgap_goto(drupalgap.settings.front);
       }
     });
   }
@@ -127,7 +126,7 @@ function user_menu() {
       'user/logout': {
         'title': t('Logout'),
         'page_callback': 'user_logout_callback',
-        'pageshow': 'user_logout_pageshow',
+        'pagechange': 'user_logout_pagechange',
         options: {reloadPage: true}
       },
       'user/register': {
