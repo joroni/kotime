@@ -13,7 +13,7 @@ Drupal.settings.debug = true;
  ****************************************/
 
 /* DRUPAL PATHS */
- 
+
 // Site Path (do not use a trailing slash)
 Drupal.settings.site_path = 'http://127.0.0.1/DRUPAL7'; // e.g. http://www.example.com
 
@@ -114,8 +114,8 @@ drupalgap.settings.locale = {
  *************/
 
 // App Title
-drupalgap.settings.title = 'DrupalGap';
- 
+drupalgap.settings.title = 'DrupalGap2';
+
 // App Front Page
 drupalgap.settings.front = 'dashboard';
 
@@ -393,4 +393,3 @@ drupalgap.settings.cache = {}; // Do not remove this line.
 
 // Theme Registry - Set to true to load the page.tpl.html contents from cache.
 drupalgap.settings.cache.theme_registry = true;
-
